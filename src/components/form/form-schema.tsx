@@ -16,5 +16,5 @@ export const formSchema = z.object({
   passedOutYear: z.string().min(1, "Passout year is required"),
   email: z.string().email("Invalid email address"),
   phoneNumber: z.string().min(1, "Phone number is required"),
-  password7: z.string().min(8, "Password must be at least 8 characters"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
 });

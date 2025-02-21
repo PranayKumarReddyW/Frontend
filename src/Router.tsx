@@ -6,7 +6,7 @@ import NoMatch from "./pages/NoMatch";
 import Dashboard from "./pages/Dashboard";
 import Empty from "./pages/Empty";
 import Sample from "./pages/Sample";
-
+import Signup from "./pages/Signup";
 export const router = createBrowserRouter(
   [
     {
@@ -24,6 +24,10 @@ export const router = createBrowserRouter(
         {
           path: "empty",
           element: <Empty />,
+        },
+        {
+          path: "signup",
+          element: <Signup />,
         },
       ],
     },

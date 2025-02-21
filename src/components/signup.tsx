@@ -21,21 +21,20 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 
-export function DraftForm() {
+export default function DraftForm({ onSubmit }: { onSubmit: any }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {},
   });
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
-  };
 
   return (
-    <div>
+    <div className="flex flex-col justify-center items-center min-h-screen">
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">Signup Form</h1>
+
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col p-2 md:p-5 w-full mx-auto rounded-md max-w-3xl gap-2 border"
+          className="flex flex-col p-2 md:p-5 w-full mx-auto rounded-md max-w-lg gap-2 border"
         >
           <FormField
             control={form.control}
@@ -85,9 +84,15 @@ export function DraftForm() {
             name="branch"
             render={({ field }) => {
               const options = [
-                { value: "option-1", label: "Option 1" },
-                { value: "option-2", label: "Option 2" },
-                { value: "option-3", label: "Option 3" },
+                { value: "CSE DS", label: "CSE DS" },
+                { value: "CSE", label: "CSE" },
+                { value: "ECE", label: "ECE" },
+                { value: "CSE AIML", label: "CSE AIML" },
+                { value: "EEE", label: "EEE" },
+                { value: "MECH", label: "MECH" },
+                { value: "CIVIL", label: "CIVIL" },
+                { value: "CYBER SECURITY", label: "CYBER SECURITY" },
+                { value: "CSE BS", label: "CSE BS" },
               ];
               return (
                 <FormItem>
@@ -120,9 +125,10 @@ export function DraftForm() {
             name="passedOutYear"
             render={({ field }) => {
               const options = [
-                { value: "option-1", label: "Option 1" },
-                { value: "option-2", label: "Option 2" },
-                { value: "option-3", label: "Option 3" },
+                { value: "2025", label: "2025" },
+                { value: "2026", label: "2026" },
+                { value: "2027", label: "2027" },
+                { value: "2028", label: "2028" },
               ];
               return (
                 <FormItem>
@@ -194,7 +200,7 @@ export function DraftForm() {
 
           <FormField
             control={form.control}
-            name="password7"
+            name="password"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Password Field</FormLabel>
@@ -215,9 +221,9 @@ export function DraftForm() {
             )}
           />
 
-          <div className="flex justify-end items-center w-full pt-3">
-            <Button className="rounded-lg" size="sm">
-              Submit
+          <div className="flex justify-center items-center w-full pt-3">
+            <Button className="rounded-lg text-lg px-6 py-3" size="lg">
+              Signup
             </Button>
           </div>
         </form>
