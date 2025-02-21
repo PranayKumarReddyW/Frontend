@@ -24,8 +24,12 @@ export const mainMenu: NavItemWithChildren[] = [
     to: "events",
   },
   {
-    title: "Create Event",
-    to: "create-event",
+    title: "Signup",
+    to: "signup",
+  },
+  {
+    title: "Login",
+    to: "login",
   },
 ];
 

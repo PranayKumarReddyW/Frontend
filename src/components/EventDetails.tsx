@@ -2,17 +2,25 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Calendar, MapPin, DollarSign, Clock, Users, Tag } from "lucide-react";
 import axios from "axios";
+import { useSelector } from "react-redux"; // Import useSelector
+
 const EventDetails: React.FC = () => {
   const { id, name } = useParams<{ id: string; name: string }>();
   const [event, setEvent] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [nameInput, setNameInput] = useState<string>("");
+  const [mobileNumberInput, setMobileNumberInput] = useState<string>("");
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+  // Access the user from Redux store
+  const user = useSelector((state: any) => state.user); // Replace `state.user` with the actual path to the user slice in your store
+
   useEffect(() => {
     const fetchEvent = async () => {
       try {
         const response = await axios.get(`${BASE_URL}/api/events/event/${id}`, {
-          withCredentials: true, // Correct placement for axios
+          withCredentials: true,
         });
         setEvent(response.data);
       } catch (err: unknown) {
@@ -28,6 +36,33 @@ const EventDetails: React.FC = () => {
 
     fetchEvent();
   }, [id]);
+
+  const handleRegister = async () => {
+    try {
+      const payload = {
+        name: user.name,
+        mobileNumber: user.phoneNumber,
+        amount: event.registrationType === "Free" ? 0 : event.registrationFee,
+      };
+
+      const response = await axios.post(`${BASE_URL}/create-order`, payload, {
+        withCredentials: true,
+      });
+
+      if (response.data?.msg === "OK" && response.data?.url) {
+        // Redirect the user to the payment or confirmation page
+        window.location.href = response.data.url;
+      } else {
+        alert("Registration failed!");
+      }
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message || "Registration failed!");
+      } else {
+        setError("An unknown error occurred during registration.");
+      }
+    }
+  };
 
   if (loading) return <h2 className="text-center text-gray-500">Loading...</h2>;
   if (error) return <h2 className="text-center text-red-500">{error}</h2>;
@@ -73,9 +108,14 @@ const EventDetails: React.FC = () => {
             <div className="flex items-center gap-2 mt-2">
               <Tag size={16} /> <span>Category: {event.category}</span>
             </div>
-            <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800">
-              Register
-            </button>
+            <div className="mt-4">
+              <button
+                onClick={handleRegister}
+                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800"
+              >
+                Register
+              </button>
+            </div>
           </div>
         </div>
         <div className="text-gray-700 dark:text-gray-300">

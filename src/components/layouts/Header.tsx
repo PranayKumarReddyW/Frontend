@@ -264,7 +264,7 @@ export function Header() {
                 >
                   <Avatar className="h-8 w-8">
                     <AvatarFallback>
-                      {name.substring(0, 2).toUpperCase()}
+                      {name?.substring(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                 </Button>

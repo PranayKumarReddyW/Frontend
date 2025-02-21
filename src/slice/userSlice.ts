@@ -15,6 +15,7 @@ const initialState = getUserFromLocalStorage() || {
   phoneNumber: "",
   registeredEvents: [],
   createdAt: "",
+  role: "",
 };
 
 const userSlice = createSlice({
@@ -38,6 +39,7 @@ const userSlice = createSlice({
         phoneNumber: "",
         registeredEvents: [],
         createdAt: "",
+        role: "",
       };
     },
   },

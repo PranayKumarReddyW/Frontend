@@ -1,7 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-
 import { Applayout } from "./components/layouts/AppLayout";
-
 import NoMatch from "./pages/NoMatch";
 import Dashboard from "./pages/Dashboard";
 import Empty from "./pages/Empty";
@@ -12,6 +10,7 @@ import EventDetails from "./components/EventDetails";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import CreateEvent from "./pages/CreateEvent";
+import PrivateRoute from "./ProtectedRoute"; // Import the PrivateRoute component
 
 export const router = createBrowserRouter(
   [
@@ -25,19 +24,21 @@ export const router = createBrowserRouter(
         },
         {
           path: "/dashboard",
-          element: <Dashboard />,
+          element: (
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          ),
         },
+
         {
-          path: "sample",
-          element: <Sample />,
-        },
-        {
-          path: "empty",
-          element: <Empty />,
-        },
-        {
+          // Protect the events route
           path: "events",
-          element: <Events />,
+          element: (
+            <PrivateRoute>
+              <Events />
+            </PrivateRoute>
+          ),
         },
         {
           path: "events/:id/:name",
@@ -52,8 +53,13 @@ export const router = createBrowserRouter(
           element: <Login />,
         },
         {
+          // Protect the create event route
           path: "create-event",
-          element: <CreateEvent />,
+          element: (
+            <PrivateRoute>
+              <CreateEvent />
+            </PrivateRoute>
+          ),
         },
       ],
     },
