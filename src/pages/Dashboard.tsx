@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,25 +10,27 @@ import {
   TableBody,
 } from "@/components/ui/table";
 import { Bell, QrCode, List, Users } from "lucide-react";
+import axios from "axios";
 
 export default function CoordinatorDashboard() {
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [search, setSearch] = useState("");
-  const events = [
-    {
-      id: 1,
-      name: "Tech Symposium",
-      status: "Ongoing",
-      registrations: 120,
-      attendance: 85,
-    },
-    {
-      id: 2,
-      name: "Hackathon",
-      status: "Upcoming",
-      registrations: 200,
-      attendance: 0,
-    },
-  ];
+  const [events, setEvents] = useState([]);
+
+  const fetchEvents = async () => {
+    try {
+      const { data } = await axios.get(`${BASE_URL}/api/events/events`, {
+        withCredentials: true,
+      });
+      setEvents(data.events);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
 
   return (
     <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -37,21 +39,24 @@ export default function CoordinatorDashboard() {
           <CardTitle>Events Overview</CardTitle>
         </CardHeader>
         <CardContent>
-        <div className="grid grid-cols-2 gap-4">
-  <div className="flex items-center gap-2 p-4 bg-blue-100 dark:bg-blue-800 rounded-lg">
-    <List className="text-blue-600 dark:text-blue-300" />
-    <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-      {events.length} Events
-    </span>
-  </div>
-  <div className="flex items-center gap-2 p-4 bg-green-100 dark:bg-green-800 rounded-lg">
-    <Users className="text-green-600 dark:text-green-300" />
-    <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-      {events.reduce((sum, e) => sum + e.registrations, 0)} Registrations
-    </span>
-  </div>
-</div>
-
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex items-center gap-2 p-4 bg-blue-100 dark:bg-blue-800 rounded-lg">
+              <List className="text-blue-600 dark:text-blue-300" />
+              <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                {events.length} Events
+              </span>
+            </div>
+            <div className="flex items-center gap-2 p-4 bg-green-100 dark:bg-green-800 rounded-lg">
+              <Users className="text-green-600 dark:text-green-300" />
+              <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                {events.reduce(
+                  (sum, e) => sum + (e.registeredUsers?.length || 0),
+                  0
+                )}{" "}
+                Registrations
+              </span>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
@@ -71,7 +76,6 @@ export default function CoordinatorDashboard() {
                 <TableCell>Event</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell>Registrations</TableCell>
-                <TableCell>Attendance</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHeader>
@@ -81,11 +85,10 @@ export default function CoordinatorDashboard() {
                   e.name.toLowerCase().includes(search.toLowerCase())
                 )
                 .map((event) => (
-                  <TableRow key={event.id}>
+                  <TableRow key={event._id}>
                     <TableCell>{event.name}</TableCell>
-                    <TableCell>{event.status}</TableCell>
-                    <TableCell>{event.registrations}</TableCell>
-                    <TableCell>{event.attendance}</TableCell>
+                    <TableCell>{event.category}</TableCell>
+                    <TableCell>{event.registeredUsers?.length || 0}</TableCell>
                     <TableCell>
                       <Button size="sm" variant="outline">
                         <QrCode className="w-4 h-4 mr-2" /> Scan QR
