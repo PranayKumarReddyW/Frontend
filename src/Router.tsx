@@ -11,6 +11,8 @@ import Events from "./components/Events";
 import EventDetails from "./components/EventDetails";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import CreateEvent from "./pages/CreateEvent";
+
 export const router = createBrowserRouter(
   [
     {
@@ -48,6 +50,10 @@ export const router = createBrowserRouter(
         {
           path: "login",
           element: <Login />,
+        },
+        {
+          path: "create-event",
+          element: <CreateEvent />,
         },
       ],
     },

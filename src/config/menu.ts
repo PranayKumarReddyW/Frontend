@@ -23,6 +23,10 @@ export const mainMenu: NavItemWithChildren[] = [
     title: "Events",
     to: "events",
   },
+  {
+    title: "Create Event",
+    to: "create-event",
+  },
 ];
 
 export const sideMenu: NavItemWithChildren[] = [];
