@@ -1,25 +1,38 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 import { Calendar, MapPin, DollarSign, Clock, Users, Tag } from "lucide-react";
 
-const EventDetails: React.FC = () => {
-  const event = {
-    name: "Tech Innovation Summit",
-    photo: "https://via.placeholder.com/400",
-    venue: "Grand Hall, Tech Park",
-    dateTime: "March 15, 2025, 10:00 AM",
-    endTime: "March 15, 2025, 5:00 PM",
-    registrationFee: "$50",
-    maxParticipants: "200",
-    category: "Technical",
+const events: any[] = [
+  {
+    id: 1,
+    photo: "/images/tech-conference.jpg",
+    name: "Tech Conference 2025",
     description:
-      "A gathering of tech enthusiasts to discuss the latest trends in AI, Blockchain, and Cybersecurity.",
-    rules: [
-      "Participants must register in advance.",
-      "No outside food allowed.",
-      "Maintain decorum during sessions.",
-    ],
-    coordinator: "John Doe - +1234567890, johndoe@example.com",
-  };
+      "A gathering of tech enthusiasts and professionals to discuss innovations.",
+    venue: "Silicon Valley, CA",
+    dateTime: "March 15, 2025 | 10:00 AM - 4:00 PM",
+    branch: "CSE",
+  },
+  {
+    id: 2,
+    photo: "/images/ai-summit.jpg",
+    name: "AI & Machine Learning Summit",
+    description:
+      "A gathering of tech enthusiasts and professionals to discuss innovations.",
+    venue: "New York City, NY",
+    dateTime: "April 10, 2025 | 9:00 AM - 5:00 PM",
+    branch: "ECE",
+  },
+];
+
+const EventDetails: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  console.log(id);
+  const event = events.find((event) => event.name.replace(/\s/g, "-") === id);
+  console.log(event);
+  if (!event) {
+    return <h2 className="text-center text-red-500">Event not found!</h2>;
+  }
 
   return (
     <div className="mt-8 p-8 max-w-4xl mx-auto border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-black dark:text-white">
@@ -60,11 +73,11 @@ const EventDetails: React.FC = () => {
           <h2 className="text-xl font-semibold mb-2">About the Event</h2>
           <p>{event.description}</p>
           <h2 className="text-xl font-semibold mt-4">Rules & Guidelines</h2>
-          <ul className="list-disc ml-5">
-            {event.rules.map((rule, index) => (
+          {/* <ul className="list-disc ml-5">
+            {event.rules.map((rule: any, index: any) => (
               <li key={index}>{rule}</li>
             ))}
-          </ul>
+          </ul> */}
           <h2 className="text-xl font-semibold mt-4">Coordinator Details</h2>
           <p>{event.coordinator}</p>
         </div>

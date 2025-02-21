@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
 import axios from "axios";
 import SignupForm from "../components/signup";
 import { formSchema } from "../components/form/form-schema";
@@ -9,6 +10,7 @@ import AlertErrorDemo from "../components/error-alert";
 const Signup: React.FC = () => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
@@ -23,7 +25,11 @@ const Signup: React.FC = () => {
       if (response.status === 201) {
         setShowSuccess(true);
         setErrorMessage("");
-        setTimeout(() => setShowSuccess(false), 3000);
+
+        setTimeout(() => {
+          setShowSuccess(false);
+        }, 3000);
+        navigate("/login"); // Redirect to login page
       }
     } catch (error: any) {
       if (error.response) {
@@ -39,7 +45,7 @@ const Signup: React.FC = () => {
       {showSuccess && (
         <AlertSuccessDemo
           title="Success"
-          description="User registered successfully"
+          description="User registered successfully! Redirecting to login..."
         />
       )}
       {errorMessage && (

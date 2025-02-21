@@ -8,8 +8,9 @@ import Empty from "./pages/Empty";
 import Sample from "./pages/Sample";
 import Signup from "./pages/Signup";
 import Events from "./components/Events";
-import Login from "./pages/Login";
+import EventDetails from "./components/EventDetails";
 import Home from "./pages/Home";
+import Login from "./pages/Login";
 export const router = createBrowserRouter(
   [
     {
@@ -19,10 +20,9 @@ export const router = createBrowserRouter(
         {
           path: "/",
           element: <Home />,
-
         },
         {
-          path: "",
+          path: "/dashboard",
           element: <Dashboard />,
         },
         {
@@ -36,6 +36,10 @@ export const router = createBrowserRouter(
         {
           path: "events",
           element: <Events />,
+        },
+        {
+          path: "events/:id",
+          element: <EventDetails />,
         },
         {
           path: "signup",

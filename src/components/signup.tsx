@@ -203,7 +203,7 @@ export default function DraftForm({ onSubmit }: { onSubmit: any }) {
             name="password"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Password Field</FormLabel>
+                <FormLabel>Password Field</FormLabel> *
                 <FormControl>
                   <Input
                     value={field.value || ""}
@@ -215,7 +215,6 @@ export default function DraftForm({ onSubmit }: { onSubmit: any }) {
                     }}
                   />
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}

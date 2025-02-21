@@ -4,7 +4,7 @@ import { Footer } from "./Footer";
 
 export function Applayout() {
   const location = useLocation();
-  const hideHeaderPaths = ["/signup","/"]; // Add more paths as needed
+  const hideHeaderPaths = ["/signup", "/", "/login"]; // Add more paths as needed
 
   return (
     <>

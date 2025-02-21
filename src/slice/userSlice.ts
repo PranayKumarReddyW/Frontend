@@ -7,7 +7,7 @@ interface User {
   name: string;
   email: string;
   role?: string;
-  [key: string]: any; // Allows additional claims from the token
+  [key: string]: any;
 }
 
 interface UserState {

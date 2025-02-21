@@ -9,7 +9,7 @@ export default function DestructiveAlertDemo({
   description: string;
 }) {
   return (
-    <div className="fixed bottom-4 right-4 z-100">
+    <div className="fixed bottom-4 right-28 z-100">
       <Alert variant="destructive" className="shadow-lg rounded-lg p-4">
         <div className="flex items-center gap-2">
           <OctagonAlertIcon className="h-4 w-4 text-red-600" />

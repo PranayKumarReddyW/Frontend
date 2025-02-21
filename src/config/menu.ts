@@ -17,24 +17,7 @@ interface NavItemWithChildren extends NavItem {
 export const mainMenu: NavItemWithChildren[] = [
   {
     title: "Dashboard",
-    to: "",
-  },
-  {
-    title: "Dropdown",
-    items: [
-      {
-        title: "Sample",
-        to: "/sample",
-      },
-      {
-        title: "Sample Dua",
-        to: "/#",
-      },
-    ],
-  },
-  {
-    title: "Empty",
-    to: "empty",
+    to: "dashboard",
   },
   {
     title: "Events",

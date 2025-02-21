@@ -9,7 +9,7 @@ export default function AlertSuccessDemo({
   description: string;
 }) {
   return (
-    <div className="fixed bottom-4 right-4 z-100">
+    <div className="fixed bottom-4 right-28 z-100">
       <Alert className="border-emerald-600/50 text-emerald-600 dark:border-emerald-600 shadow-lg rounded-lg p-4">
         <div className="flex items-center gap-2">
           <CircleCheckBigIcon className="h-5 w-5 text-emerald-600" />
