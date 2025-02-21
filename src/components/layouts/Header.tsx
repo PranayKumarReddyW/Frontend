@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Icons } from "@/components/icons";
 import { appConfig } from "@/config/app";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,10 +24,53 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 export function Header() {
+  const user = useSelector((state: RootState) => state.user);
+  const {
+    name,
+    email,
+    branch,
+    phoneNumber,
+    registrationNumber,
+    passedOutYear,
+  } = user;
+  console.log(user);
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+  const handleLogout = async () => {
+    console.log("Logout");
+
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/api/users/logout`,
+        {},
+        { withCredentials: true }
+      );
+
+      if (response.status !== 200) {
+        throw new Error(response.data.message || "Logout failed");
+      }
+
+      localStorage.clear();
+      window.location.href = "/login";
+    } catch (error: any) {
+      console.error("Logout failed:", error);
+
+      if (error.response) {
+        console.error("Server responded with:", error.response.data.message);
+      } else if (error.request) {
+        console.error("No response received from server.");
+      } else {
+        console.error("Unexpected error:", error.message);
+      }
+    }
+  };
 
   return (
     <header className="supports-backdrop-blur:bg-background/60 sticky top-0 z-50 w-full border-b bg-background/90 backdrop-blur">
@@ -213,46 +256,56 @@ export function Header() {
             {/* <CommandMenu /> */}
           </div>
           <nav className="flex items-center space-x-2">
-  <DropdownMenu>
-    <DropdownMenuTrigger asChild>
-      <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-        <Avatar className="h-8 w-8">
-          <AvatarFallback>SR</AvatarFallback>
-        </Avatar>
-      </Button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent className="w-64" align="end" forceMount>
-      <DropdownMenuLabel className="font-normal">
-        <div className="flex flex-col space-y-1">
-          <p className="text-sm font-semibold leading-none">Sailakshmi Reddy</p>
-          <p className="text-xs leading-none text-muted-foreground">
-            sailakshmi@example.com
-          </p>
-        </div>
-      </DropdownMenuLabel>
-      <DropdownMenuSeparator />
-      <div className="p-2 text-sm space-y-1">
-        <p>
-          <span className="font-medium">Branch:</span> Computer Science
-        </p>
-        <p>
-          <span className="font-medium">Phone:</span> +91 9876543210
-        </p>
-        <p>
-          <span className="font-medium">Reg No:</span> 12345678
-        </p>
-        <p>
-          <span className="font-medium">Year:</span> Final Year
-        </p>
-      </div>
-      <DropdownMenuSeparator />
-      <DropdownMenuItem className="text-red-500 hover:bg-red-100 dark:hover:bg-red-900">
-        Log out
-      </DropdownMenuItem>
-    </DropdownMenuContent>
-  </DropdownMenu>
-</nav>
-
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="relative h-8 w-8 rounded-full"
+                >
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback>
+                      {name.substring(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-64" align="end" forceMount>
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-semibold leading-none">
+                      {name}{" "}
+                    </p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {email}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <div className="p-2 text-sm space-y-1">
+                  <p>
+                    <span className="font-medium">Branch:</span> {branch}
+                  </p>
+                  <p>
+                    <span className="font-medium">Phone:</span> {phoneNumber}
+                  </p>
+                  <p>
+                    <span className="font-medium">Reg No:</span>{" "}
+                    {registrationNumber}
+                  </p>
+                  <p>
+                    <span className="font-medium">Year:</span> {passedOutYear}
+                  </p>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="text-red-500 hover:bg-red-100 dark:hover:bg-red-900"
+                >
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </nav>
         </div>
       </div>
     </header>

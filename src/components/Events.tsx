@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -9,49 +9,62 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import axios from "axios";
 
 interface Event {
-  id: number;
-  photo: string;
+  id: string;
+  photo?: string;
   name: string;
   description: string;
   venue: string;
   dateTime: string;
   branch: string;
+  eventImage: string;
 }
 
-const eventsData: Event[] = [
-  {
-    id: 1,
-    photo: "/images/tech-conference.jpg",
-    name: "Tech Conference 2025",
-    description:
-      "A gathering of tech enthusiasts and professionals to discuss innovations.",
-    venue: "Silicon Valley, CA",
-    dateTime: "March 15, 2025 | 10:00 AM - 4:00 PM",
-    branch: "CSE",
-  },
-  {
-    id: 2,
-    photo: "/images/ai-summit.jpg",
-    name: "AI & Machine Learning Summit",
-    description:
-      "A gathering of tech enthusiasts and professionals to discuss innovations.",
-    venue: "New York City, NY",
-    dateTime: "April 10, 2025 | 9:00 AM - 5:00 PM",
-    branch: "ECE",
-  },
-];
-
-const branches: string[] = ["All", "CSE", "ECE", "MECH", "CIVIL"];
+const branches: string[] = ["All", "CSE DS", "IT", "ECE"];
 
 const Events: React.FC = () => {
   const [selectedBranch, setSelectedBranch] = useState<string>("All");
+  const [events, setEvents] = useState<Event[]>([]);
+  const API_URL = import.meta.env.VITE_API_BASE_URL + "/api/events/events";
 
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get(API_URL, {
+          withCredentials: true,
+        });
+
+        if (response.data && response.data.events) {
+          const formattedEvents = response.data.events.map((event: any) => ({
+            id: event._id,
+            eventImage: event.eventImage,
+            name: event.name,
+            description: event.description,
+            venue: event.venue,
+            dateTime:
+              new Date(event.date).toLocaleDateString() +
+              " | " +
+              event.startTime +
+              " - " +
+              event.endTime,
+            branch: event.branches?.[0] || "General", // Default to "General" if undefined
+          }));
+          setEvents(formattedEvents);
+        }
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+  console.log(events[1]);
   const filteredEvents =
     selectedBranch === "All"
-      ? eventsData
-      : eventsData.filter((event) => event.branch === selectedBranch);
+      ? events
+      : events.filter((event) => event.branch === selectedBranch);
 
   return (
     <div className="p-6">
@@ -72,29 +85,40 @@ const Events: React.FC = () => {
         </SelectContent>
       </Select>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-        {filteredEvents.map((event) => (
-          <Link key={event.id} to={`/events/${event.name.replace(/\s/g, "-")}`}>
-            <Card className="rounded-2xl shadow-md overflow-hidden transition-transform">
-              <img
-                src={event.photo}
-                alt={event.name}
-                className="w-full h-48 object-cover"
-              />
-              <CardContent className="p-4">
-                <h2 className="text-xl font-bold mb-2">{event.name}</h2>
-                <p className="text-sm text-gray-600 mb-3">
-                  {event.description}
-                </p>
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <MapPin size={16} /> <span>{event.venue}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-500 mt-2">
-                  <Calendar size={16} /> <span>{event.dateTime}</span>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
+        {filteredEvents.length > 0 ? (
+          filteredEvents.map((event) => (
+            <Link
+              key={event.id}
+              to={`/events/${event.id}/${encodeURIComponent(
+                event.name.replace(/\s/g, "-")
+              )}`}
+            >
+              <Card className="rounded-2xl shadow-md overflow-hidden transition-transform">
+                <img
+                  src={event.eventImage}
+                  alt={event.name}
+                  className="w-full h-48 object-cover"
+                />
+                <CardContent className="p-4">
+                  <h2 className="text-xl font-bold mb-2">{event.name}</h2>
+                  <p className="text-sm text-gray-600 mb-3">
+                    {event.description}
+                  </p>
+                  <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <MapPin size={16} /> <span>{event.venue}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-500 mt-2">
+                    <Calendar size={16} /> <span>{event.dateTime}</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          ))
+        ) : (
+          <p className="text-center text-gray-500 col-span-full">
+            No events available
+          </p>
+        )}
       </div>
     </div>
   );

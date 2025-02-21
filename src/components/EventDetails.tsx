@@ -1,38 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Calendar, MapPin, DollarSign, Clock, Users, Tag } from "lucide-react";
-
-const events: any[] = [
-  {
-    id: 1,
-    photo: "/images/tech-conference.jpg",
-    name: "Tech Conference 2025",
-    description:
-      "A gathering of tech enthusiasts and professionals to discuss innovations.",
-    venue: "Silicon Valley, CA",
-    dateTime: "March 15, 2025 | 10:00 AM - 4:00 PM",
-    branch: "CSE",
-  },
-  {
-    id: 2,
-    photo: "/images/ai-summit.jpg",
-    name: "AI & Machine Learning Summit",
-    description:
-      "A gathering of tech enthusiasts and professionals to discuss innovations.",
-    venue: "New York City, NY",
-    dateTime: "April 10, 2025 | 9:00 AM - 5:00 PM",
-    branch: "ECE",
-  },
-];
-
+import axios from "axios";
 const EventDetails: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  console.log(id);
-  const event = events.find((event) => event.name.replace(/\s/g, "-") === id);
-  console.log(event);
-  if (!event) {
+  const { id, name } = useParams<{ id: string; name: string }>();
+  const [event, setEvent] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/api/events/event/${id}`, {
+          withCredentials: true, // Correct placement for axios
+        });
+        setEvent(response.data);
+      } catch (err: unknown) {
+        if (axios.isAxiosError(err)) {
+          setError(err.response?.data?.message || "Event not found!");
+        } else {
+          setError("An unknown error occurred");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvent();
+  }, [id]);
+
+  if (loading) return <h2 className="text-center text-gray-500">Loading...</h2>;
+  if (error) return <h2 className="text-center text-red-500">{error}</h2>;
+  if (!event)
     return <h2 className="text-center text-red-500">Event not found!</h2>;
-  }
 
   return (
     <div className="mt-8 p-8 max-w-4xl mx-auto border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-black dark:text-white">
@@ -40,7 +40,7 @@ const EventDetails: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <img
-            src={event.photo}
+            src={event.eventImage}
             alt={event.name}
             className="w-full h-64 object-cover rounded-lg"
           />
@@ -49,13 +49,22 @@ const EventDetails: React.FC = () => {
               <MapPin size={16} /> <span>{event.venue}</span>
             </div>
             <div className="flex items-center gap-2 mt-2">
-              <Calendar size={16} /> <span>{event.dateTime}</span>
+              <Calendar size={16} />{" "}
+              <span>{new Date(event.date).toDateString()}</span>
             </div>
             <div className="flex items-center gap-2 mt-2">
-              <Clock size={16} /> <span>End Time: {event.endTime}</span>
+              <Clock size={16} />{" "}
+              <span>
+                Time: {event.startTime} - {event.endTime}
+              </span>
             </div>
             <div className="flex items-center gap-2 mt-2">
-              <DollarSign size={16} /> <span>{event.registrationFee}</span>
+              <DollarSign size={16} />{" "}
+              <span>
+                {event.registrationType === "Free"
+                  ? "Free"
+                  : `$${event.registrationFee}`}
+              </span>
             </div>
             <div className="flex items-center gap-2 mt-2">
               <Users size={16} />{" "}
@@ -73,13 +82,15 @@ const EventDetails: React.FC = () => {
           <h2 className="text-xl font-semibold mb-2">About the Event</h2>
           <p>{event.description}</p>
           <h2 className="text-xl font-semibold mt-4">Rules & Guidelines</h2>
-          {/* <ul className="list-disc ml-5">
-            {event.rules.map((rule: any, index: any) => (
+          <ul className="list-disc ml-5">
+            {event.rules.map((rule: string, index: number) => (
               <li key={index}>{rule}</li>
             ))}
-          </ul> */}
+          </ul>
           <h2 className="text-xl font-semibold mt-4">Coordinator Details</h2>
-          <p>{event.coordinator}</p>
+          <p>
+            {event.contactEmail} | {event.contactPhone}
+          </p>
         </div>
       </div>
     </div>

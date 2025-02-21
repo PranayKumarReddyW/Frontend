@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { addUser } from "../slice/userSlice";
 import { LoginForm } from "@/components/login-form";
 import AlertSuccessDemo from "@/components/sucees-alert";
 import AlertErrorDemo from "@/components/error-alert";
+import { RootState } from "../store";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function Login() {
   interface AuthDetails {
@@ -14,6 +17,8 @@ export default function Login() {
   }
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.user);
   const [loginData, setLoginData] = useState<AuthDetails>({
     email: "",
     password: "",
@@ -32,25 +37,39 @@ export default function Login() {
 
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/api/users/login`,
-        loginData
+        `${BASE_URL}/api/users/login`,
+        loginData,
+        {
+          withCredentials: true,
+        }
       );
 
-      if (response.status === 200) {
-        setShowSuccess(true);
-        setErrorMessage("");
-
-        setTimeout(() => {
-          setShowSuccess(false);
-        }, 2000);
-        navigate("/dashboard");
-      } else {
-        setErrorMessage("Login failed. Please try again.");
+      if (response.status !== 200) {
+        throw new Error(response.data.message || "Invalid credentials");
       }
+
+      dispatch(addUser(response.data.user));
+      setShowSuccess(true);
+      setErrorMessage("");
+
+      setTimeout(() => {
+        setShowSuccess(false);
+      }, 2000);
+
+      navigate("/dashboard");
     } catch (error: any) {
+      console.log("Login error:", error);
+
       if (error.response) {
-        setErrorMessage(error.response.data.message || "Login failed.");
+        // Backend responded with an error status (e.g., 400, 401, 403)
+        setErrorMessage(
+          error.response.data.message || "Invalid email or password"
+        );
+      } else if (error.request) {
+        // Request was made but no response received
+        setErrorMessage("Server is not responding. Try again later.");
       } else {
+        // Some other error occurred
         setErrorMessage("An unexpected error occurred.");
       }
     }
