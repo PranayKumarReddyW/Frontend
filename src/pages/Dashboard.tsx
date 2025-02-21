@@ -6,25 +6,35 @@ import {
   Table,
   TableHeader,
   TableRow,
+  TableHead,
   TableCell,
   TableBody,
 } from "@/components/ui/table";
 import { Bell, QrCode, List, Users } from "lucide-react";
 import axios from "axios";
 
+// ✅ Define an Event type
+interface Event {
+  _id: string;
+  name: string;
+  category: string;
+  registeredUsers?: { id: string; name: string }[]; // Optional property
+}
+
 export default function CoordinatorDashboard() {
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [search, setSearch] = useState("");
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState<Event[]>([]); // ✅ Explicit type
 
   const fetchEvents = async () => {
     try {
-      const { data } = await axios.get(`${BASE_URL}/api/events/events`, {
+      const { data } = await axios.get<{ events: Event[] }>(`${BASE_URL}/api/events/events`, {
         withCredentials: true,
       });
-      setEvents(data.events);
+      setEvents(data.events || []);
     } catch (error) {
-      console.error(error);
+      console.error("Failed to fetch events", error);
+      setEvents([]);
     }
   };
 
@@ -73,10 +83,10 @@ export default function CoordinatorDashboard() {
           <Table className="mt-4">
             <TableHeader>
               <TableRow>
-                <TableCell>Event</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Registrations</TableCell>
-                <TableCell>Actions</TableCell>
+                <TableHead>Event</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Registrations</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
