@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Empty from "./pages/Empty";
 import Sample from "./pages/Sample";
 import Signup from "./pages/Signup";
+import Events from "./components/Events";
 export const router = createBrowserRouter(
   [
     {
@@ -24,6 +25,10 @@ export const router = createBrowserRouter(
         {
           path: "empty",
           element: <Empty />,
+        },
+        {
+          path: "events",
+          element: <Events />,
         },
         {
           path: "signup",
