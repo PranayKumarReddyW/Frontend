@@ -37,21 +37,21 @@ export default function CoordinatorDashboard() {
           <CardTitle>Events Overview</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex items-center gap-2 p-4 bg-blue-100 rounded-lg">
-              <List className="text-blue-600" />
-              <span className="text-lg font-semibold">
-                {events.length} Events
-              </span>
-            </div>
-            <div className="flex items-center gap-2 p-4 bg-green-100 rounded-lg">
-              <Users className="text-green-600" />
-              <span className="text-lg font-semibold">
-                {events.reduce((sum, e) => sum + e.registrations, 0)}{" "}
-                Registrations
-              </span>
-            </div>
-          </div>
+        <div className="grid grid-cols-2 gap-4">
+  <div className="flex items-center gap-2 p-4 bg-blue-100 dark:bg-blue-800 rounded-lg">
+    <List className="text-blue-600 dark:text-blue-300" />
+    <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+      {events.length} Events
+    </span>
+  </div>
+  <div className="flex items-center gap-2 p-4 bg-green-100 dark:bg-green-800 rounded-lg">
+    <Users className="text-green-600 dark:text-green-300" />
+    <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+      {events.reduce((sum, e) => sum + e.registrations, 0)} Registrations
+    </span>
+  </div>
+</div>
+
         </CardContent>
       </Card>
 

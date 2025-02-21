@@ -213,31 +213,46 @@ export function Header() {
             {/* <CommandMenu /> */}
           </div>
           <nav className="flex items-center space-x-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="relative h-8 w-8 rounded-full"
-                >
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback>SC</AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
-                <DropdownMenuLabel className="font-normal">
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">shadcn</p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      m@example.com
-                    </p>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Log out</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </nav>
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+        <Avatar className="h-8 w-8">
+          <AvatarFallback>SR</AvatarFallback>
+        </Avatar>
+      </Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent className="w-64" align="end" forceMount>
+      <DropdownMenuLabel className="font-normal">
+        <div className="flex flex-col space-y-1">
+          <p className="text-sm font-semibold leading-none">Sailakshmi Reddy</p>
+          <p className="text-xs leading-none text-muted-foreground">
+            sailakshmi@example.com
+          </p>
+        </div>
+      </DropdownMenuLabel>
+      <DropdownMenuSeparator />
+      <div className="p-2 text-sm space-y-1">
+        <p>
+          <span className="font-medium">Branch:</span> Computer Science
+        </p>
+        <p>
+          <span className="font-medium">Phone:</span> +91 9876543210
+        </p>
+        <p>
+          <span className="font-medium">Reg No:</span> 12345678
+        </p>
+        <p>
+          <span className="font-medium">Year:</span> Final Year
+        </p>
+      </div>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem className="text-red-500 hover:bg-red-100 dark:hover:bg-red-900">
+        Log out
+      </DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+</nav>
+
         </div>
       </div>
     </header>

@@ -8,12 +8,19 @@ import Empty from "./pages/Empty";
 import Sample from "./pages/Sample";
 import Signup from "./pages/Signup";
 import Events from "./components/Events";
+import Login from "./pages/Login";
+import Home from "./pages/Home";
 export const router = createBrowserRouter(
   [
     {
       path: "/",
       element: <Applayout />,
       children: [
+        {
+          path: "/",
+          element: <Home />,
+
+        },
         {
           path: "",
           element: <Dashboard />,
@@ -33,6 +40,10 @@ export const router = createBrowserRouter(
         {
           path: "signup",
           element: <Signup />,
+        },
+        {
+          path: "login",
+          element: <Login />,
         },
       ],
     },
