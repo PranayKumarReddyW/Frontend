@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 interface AuthDetails {
   email: string;
   password: string;
+  role: string; // Added role to AuthDetails
 }
 
 interface LoginFormProps {
@@ -41,6 +42,7 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {/* Ensure this form is not inside another form */}
           <form onSubmit={onSubmit}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
@@ -68,6 +70,9 @@ export function LoginForm({
                   required
                 />
               </div>
+
+              {/* Role Selection */}
+
               <Button type="submit" className="w-full">
                 Login
               </Button>

@@ -3,6 +3,7 @@ import * as z from "zod";
 import { formSchema } from "./form/form-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -197,7 +198,6 @@ export default function DraftForm({ onSubmit }: { onSubmit: any }) {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="password"
@@ -224,6 +224,12 @@ export default function DraftForm({ onSubmit }: { onSubmit: any }) {
             <Button className="rounded-lg text-lg px-6 py-3" size="lg">
               Signup
             </Button>
+          </div>
+          <div className="mt-4 text-center text-sm">
+            Already have an account?{" "}
+            <Link to="/login" className="underline underline-offset-4">
+              Login
+            </Link>
           </div>
         </form>
       </Form>

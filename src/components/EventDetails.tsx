@@ -9,8 +9,6 @@ const EventDetails: React.FC = () => {
   const [event, setEvent] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [nameInput, setNameInput] = useState<string>("");
-  const [mobileNumberInput, setMobileNumberInput] = useState<string>("");
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   // Access the user from Redux store
@@ -40,17 +38,19 @@ const EventDetails: React.FC = () => {
   const handleRegister = async () => {
     try {
       const payload = {
-        name: user.name,
-        mobileNumber: user.phoneNumber,
+        name: user.name, // Use user from Redux store
+        mobileNumber: user.phoneNumber, // Use user from Redux store
         amount: event.registrationType === "Free" ? 0 : event.registrationFee,
+        userId: user._id, // Use user from Redux store
+        eventId: event._id,
       };
-
+      console.log(payload);
       const response = await axios.post(`${BASE_URL}/create-order`, payload, {
         withCredentials: true,
       });
 
+      // Check if the response contains the URL for redirection
       if (response.data?.msg === "OK" && response.data?.url) {
-        // Redirect the user to the payment or confirmation page
         window.location.href = response.data.url;
       } else {
         alert("Registration failed!");

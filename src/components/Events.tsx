@@ -18,11 +18,19 @@ interface Event {
   description: string;
   venue: string;
   dateTime: string;
-  branch: string;
+  branches: string[];
   eventImage: string;
 }
 
-const branches: string[] = ["All", "CSE DS", "IT", "ECE"];
+const branches: string[] = [
+  "All",
+  "CSE",
+  "AIML",
+  "ECE",
+  "EEE",
+  "MECH",
+  "CIVIL",
+];
 
 const Events: React.FC = () => {
   const [selectedBranch, setSelectedBranch] = useState<string>("All");
@@ -49,7 +57,7 @@ const Events: React.FC = () => {
               event.startTime +
               " - " +
               event.endTime,
-            branch: event.branches?.[0] || "General", // Default to "General" if undefined
+            branches: event.branches,
           }));
           setEvents(formattedEvents);
         }
@@ -60,11 +68,11 @@ const Events: React.FC = () => {
 
     fetchEvents();
   }, []);
-  console.log(events[1]);
+  console.log(events);
   const filteredEvents =
     selectedBranch === "All"
       ? events
-      : events.filter((event) => event.branch === selectedBranch);
+      : events.filter((event) => event.branches.includes(selectedBranch));
 
   return (
     <div className="p-6">

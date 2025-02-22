@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table";
 import { Bell, QrCode, List, Users } from "lucide-react";
 import axios from "axios";
+import QrScanner from "qr-scanner";
 
 // ✅ Define an Event type
 interface Event {
@@ -25,12 +26,19 @@ export default function CoordinatorDashboard() {
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [search, setSearch] = useState("");
   const [events, setEvents] = useState<Event[]>([]); // ✅ Explicit type
+  const [scanning, setScanning] = useState(false);
+  const [qrResult, setQrResult] = useState<string | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null); // Reference to video element
+  const scannerRef = useRef<QrScanner | null>(null); // Reference to QR Scanner instance
 
   const fetchEvents = async () => {
     try {
-      const { data } = await axios.get<{ events: Event[] }>(`${BASE_URL}/api/events/events`, {
-        withCredentials: true,
-      });
+      const { data } = await axios.get<{ events: Event[] }>(
+        `${BASE_URL}/api/events/events`,
+        {
+          withCredentials: true,
+        }
+      );
       setEvents(data.events || []);
     } catch (error) {
       console.error("Failed to fetch events", error);
@@ -38,8 +46,30 @@ export default function CoordinatorDashboard() {
     }
   };
 
+  const startScanner = () => {
+    setScanning(true);
+    if (videoRef.current) {
+      scannerRef.current = new QrScanner(videoRef.current, (result) => {
+        setQrResult(result); // Store the QR code result
+      });
+      scannerRef.current.start();
+    }
+  };
+
+  const stopScanner = () => {
+    setScanning(false);
+    if (scannerRef.current) {
+      scannerRef.current.stop();
+    }
+  };
+
   useEffect(() => {
     fetchEvents();
+    return () => {
+      if (scannerRef.current) {
+        scannerRef.current.stop();
+      }
+    };
   }, []);
 
   return (
@@ -100,7 +130,11 @@ export default function CoordinatorDashboard() {
                     <TableCell>{event.category}</TableCell>
                     <TableCell>{event.registeredUsers?.length || 0}</TableCell>
                     <TableCell>
-                      <Button size="sm" variant="outline">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={startScanner}
+                      >
                         <QrCode className="w-4 h-4 mr-2" /> Scan QR
                       </Button>
                     </TableCell>
@@ -110,6 +144,25 @@ export default function CoordinatorDashboard() {
           </Table>
         </CardContent>
       </Card>
+
+      {scanning && (
+        <Card className="md:col-span-3">
+          <CardHeader>
+            <CardTitle>QR Scanner</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <video ref={videoRef} width="100%" height="auto" />
+            {qrResult && (
+              <div className="mt-4">
+                <p>Scanned QR Code: {qrResult}</p>
+                <Button size="sm" variant="outline" onClick={stopScanner}>
+                  Stop Scanning
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       <Card className="md:col-span-3">
         <CardHeader>

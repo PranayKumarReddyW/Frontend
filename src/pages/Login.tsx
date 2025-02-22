@@ -15,6 +15,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 interface LoginData {
   email: string;
   password: string;
+  role: string;
 }
 
 // Define the response structure for the login API call
@@ -34,6 +35,7 @@ export default function Login() {
   const [loginData, setLoginData] = useState<LoginData>({
     email: "",
     password: "",
+    role: "users",
   });
 
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
@@ -56,12 +58,16 @@ export default function Login() {
         }
       );
 
+      if (response.status === 200) navigate("/events");
+
       // Check if the response status is 200
-      if (response.status === 200) {
+      if (response.status === 200 && response.data.user) {
         // If login is successful, add user to the state
         dispatch(addUser(response.data.user));
 
         // Add role to the roleSlice
+        dispatch(setRole(response.data.user.role || "student"));
+
         setShowSuccess(true);
         setErrorMessage("");
 
@@ -102,6 +108,7 @@ export default function Login() {
           <AlertErrorDemo title="Error" description={errorMessage} />
         )}
 
+        {/* Removed the form tag here */}
         <LoginForm
           auth={loginData}
           setAuth={setLoginData}

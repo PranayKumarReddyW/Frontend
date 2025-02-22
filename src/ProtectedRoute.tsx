@@ -10,11 +10,12 @@ const getTokenFromCookie = () => {
   return token;
 };
 
-const studentAccessRoutes = ["/events", "/profile"]; // List of routes that students can access
+const studentAccessRoutes = ["/events", "/profile"];
 const coordinatorAccessRoutes = [
   "/create-event",
   "/manage-events",
-  "dashboard",
+  "/dashboard",
+  "/events",
 ];
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
@@ -42,7 +43,7 @@ const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
     };
 
     fetchRoleFromToken();
-  }, []);
+  }, []); // Adding an empty dependency array to ensure the effect runs only once on mount
 
   if (loading) return <div>Loading...</div>;
 
@@ -50,16 +51,13 @@ const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
     return <Navigate to="/unauthorized" replace />;
   }
 
-  // Role-based access
   if (role === "Student") {
-    // Redirect student if trying to access routes not in the studentAccessRoutes list
     if (!studentAccessRoutes.includes(location.pathname)) {
       return <Navigate to="/unauthorized" replace />;
     }
   }
 
   if (role === "Coordinator") {
-    // Redirect coordinator if trying to access routes not in the coordinatorAccessRoutes list
     if (!coordinatorAccessRoutes.includes(location.pathname)) {
       return <Navigate to="/unauthorized" replace />;
     }

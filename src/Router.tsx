@@ -2,16 +2,15 @@ import { createBrowserRouter } from "react-router-dom";
 import { Applayout } from "./components/layouts/AppLayout";
 import NoMatch from "./pages/NoMatch";
 import Dashboard from "./pages/Dashboard";
-import Empty from "./pages/Empty";
-import Sample from "./pages/Sample";
 import Signup from "./pages/Signup";
 import Events from "./components/Events";
 import EventDetails from "./components/EventDetails";
 import Home from "./pages/Home";
-import Login from "./pages/Login";
+import LoginForm from "./pages/Login";
+import SuccessPage from "./pages/success-page";
 import CreateEvent from "./pages/CreateEvent";
-import PrivateRoute from "./ProtectedRoute"; // Import the PrivateRoute component
-
+import PrivateRoute from "./ProtectedRoute";
+import QrCodeScanner from "./components/qrcode";
 export const router = createBrowserRouter(
   [
     {
@@ -25,9 +24,10 @@ export const router = createBrowserRouter(
         {
           path: "/dashboard",
           element: (
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
+            // <PrivateRoute>
+            <Dashboard />
+            //{" "}
+            // </PrivateRoute>
           ),
         },
 
@@ -50,16 +50,23 @@ export const router = createBrowserRouter(
         },
         {
           path: "login",
-          element: <Login />,
+          element: <LoginForm />,
         },
         {
-          // Protect the create event route
+          path: "payment-success",
+          element: <SuccessPage />,
+        },
+        {
           path: "create-event",
           element: (
             <PrivateRoute>
               <CreateEvent />
             </PrivateRoute>
           ),
+        },
+        {
+          path: "/scan",
+          element: <QrCodeScanner />,
         },
       ],
     },
